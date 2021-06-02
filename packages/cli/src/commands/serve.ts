@@ -1,6 +1,6 @@
 import path from 'path';
 import { Command } from 'commander';
-import { serve } from '@code.it/local-api';
+import { serve } from '@codeitout/local-api';
 
 let isProduction = 'production' === 'production';
 

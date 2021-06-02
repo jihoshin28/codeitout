@@ -1,6 +1,6 @@
 {
   "name": "codeitout",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "",
   "files": [
     "dist"
@@ -17,14 +17,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@codeitout/client": "^1.0.0"
+    "@codeitout/client": "^0.0.1"
   },
   "devDependencies": {
-    "@codeitout/local-api": "^1.0.0",
+    "@codeitout/local-api": "^0.0.1",
     "@types/node": "^15.6.1",
     "commander": "^7.0.0",
     "esbuild": "0.8.26",
     "typescript": "^4.1.3"
   },
-  "gitHead": "2e23575468578b61827cc22180670d0c2bda71c4"
+  "gitHead": "1f9a9572554d955596372222d918b34d0397f849"
 }
