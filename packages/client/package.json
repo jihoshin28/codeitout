@@ -1,5 +1,5 @@
 {
-  "name": "@code.it/client",
+  "name": "@codeitout/client",
   "version": "1.0.0",
   "publishConfig": {
     "access": "public"
