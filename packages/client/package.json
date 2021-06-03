@@ -1,6 +1,6 @@
 {
   "name": "@codeitout/client",
-  "version": "1.0.3",
+  "version": "0.0.1",
   "publishConfig": {
     "access": "public"
   },
@@ -64,5 +64,5 @@
       "last 1 safari version"
     ]
   },
-  "gitHead": "357acd60ee7b580ef8b0789f9022ea5d035fe002"
+  "gitHead": "f74ce307785ef9e3c94d25198a1e1ce367682085"
 }

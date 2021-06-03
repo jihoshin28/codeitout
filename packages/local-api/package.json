@@ -1,6 +1,6 @@
 {
   "name": "@codeitout/local-api",
-  "version": "1.0.3",
+  "version": "0.0.1",
   "description": "",
   "files": [
     "dist"
@@ -23,10 +23,10 @@
     "typescript": "^4.1.3"
   },
   "dependencies": {
-    "@codeitout/client": "^1.0.3",
+    "@codeitout/client": "^0.0.1",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "http-proxy-middleware": "^2.0.0"
   },
-  "gitHead": "357acd60ee7b580ef8b0789f9022ea5d035fe002"
+  "gitHead": "f74ce307785ef9e3c94d25198a1e1ce367682085"
 }
