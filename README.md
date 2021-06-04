@@ -6,115 +6,58 @@ Users can open multiple windows to easily test multiple solutions on the same sc
 
 The work that users do on the platform is saved on the local machine, so that users can continue their work, as well as export their work to other platforms. 
 
-# Getting Started
+The project consists of three different packages which handle the ***client*** (frontend components), ***CLI***, and ***local API*** (.
 
-The work is currently hosted on npm as well as github and there are multiple ways to get started.
+## NPM
 
-## Github
+You can also choose to access the files which are hosted on NPM. 
 
-You can choose to run the locally by simply cloning the source code from Github. 
+### NPX
 
-The platform is currently handling package management through lerna, so you'll have to start by running the lerna start script.
+The easiest way to run the platform is by running `npx codeitout serve` in an empty folder on your local machine.
 
-To do this navigate to 
+This command will ask you permission to download necessary files from NPM, and then start your Express server right away. 
 
-T
+Navigate to the url on your console to see the platform. (By default this is `http://localhost:4005`)
 
-### 1) Install PSQL
+### Install the files
 
-The database for this application is psql, and requires a postgresql to be installed onto your local machine.
+You can install the files onto your local system then run the server. 
 
-In order to do this, use the package management software package management system homebrew.
+Run `npm install codeitout`.
 
-Click [here](https://brew.sh/) on instructions for downloading homebrew.
+This will give you folder with node_modules and package.json configurations. 
 
-After installing homebrew, run `brew install postgresql` to download postgresql.
-
-After that completes downloading, run `postgres --version` in your terminal.
-
-If you see some version number appear in your terminal, you're good to go with postgres.
-
-### 2) Setup your postgres database and migrations
-
-You should now navigate to the backend component root directory, and run `npm setup`.
-
-This will command will take care of setting up a postgres database, creating data migrations, and seeding your data. 
-
-After that is finished your server will start running on `http://localhost:3001/api/`. Note that this is the root directory and not `http://localhost:3001`.
+Navigate to `node_modules/codeitout/dist`. Once inside the directory run `node index.js serve`. Navigate to the console URL.
 
 # Available Scripts
 
-## Frontend
+### `npm run start`
 
-### `npm start`
+The project is running on Lerna which allows you to run multiple packages concurrently.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+-**In the root directory**, run `npm run start` to run all of the packages in parallel. 
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+You can also run them individually.
 
-### `npm test`
+-**In the CLI/local-api directories** you can run this command if you need to make any changes to the original typescript files. The start command in these packages check for any typescript file changes and automatically updates the output files.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+-**In the client directory** this boots up your React application.
 
-### `npm build`
+### `npm run build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+This command is available on the client package directory and lets you build your project manually. 
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+# How to use
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### `npm eject`
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
-## Backend
 
-### `npm start`
 
-Runs the server in the development mode.
-Open [http://localhost:3001/api/](http://localhost:3001/api/) to view it in the browser.
-
-### `npm setup`
-
-Creates Postgres database, migrations, and seeds for the first time users.
-
-### `npm create-db`
-
-Creates Postgres database by running a file that utilizes a library called pg-tools which allows Javascript files to create Postgres databases.
-
-### `npm seed`
-
-This command runs the various seeding files in sequence to ensure that the seeds that are required for certain relationship are created first. This ensures a smooth seeding process. Please refrain from seeding outside of using this command.
-
-### `npm unseed`
-
-Drops all current table data.
-
-### `npm migrate`
-
-Creates sequelize migrations. 
-
-### `npm drop-migrations`
-
-Drops sequelize migrations.
-
-### `npm test`
-
-Runs jest tests, which tests all of the utilized routes for the server.
-
-# What I built
 
 ## Backend
 
