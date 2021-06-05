@@ -6,7 +6,9 @@ Users can open multiple windows to easily test multiple solutions on the same sc
 
 The work that users do on the platform is saved on the local machine, so that users can continue their work, as well as export their work to other platforms. 
 
-The project consists of three different packages which handle the ***client*** (frontend components), ***CLI***, and ***local API*** (.
+The project consists of three different packages which handle the ***client*** (frontend components), ***CLI***, and ***local API***.
+
+# Getting Started
 
 ## NPM
 
@@ -14,7 +16,7 @@ You can also choose to access the files which are hosted on NPM.
 
 ### NPX
 
-The easiest way to run the platform is by running `npx codeitout serve` in an empty folder on your local machine.
+The easiest way to run the platform is by running `npx codeitout serve` in your CLI. You'll want to create a new folder, 
 
 This command will ask you permission to download necessary files from NPM, and then start your Express server right away. 
 
@@ -22,13 +24,21 @@ Navigate to the url on your console to see the platform. (By default this is `ht
 
 ### Install the files
 
-You can install the files onto your local system then run the server. 
+You can install also the install all the packages directly onto your machine first. 
 
 Run `npm install codeitout`.
 
 This will give you folder with node_modules and package.json configurations. 
 
 Navigate to `node_modules/codeitout/dist`. Once inside the directory run `node index.js serve`. Navigate to the console URL.
+
+## Github
+
+You can also run the server from the files available here on Github.
+
+Clone the files into a new folder on your local machine. 
+
+Then similiarly, go to to `nodemodules/codeitout/dist` and run `node index.js serve` and navigate to the console url. 
 
 # Available Scripts
 
@@ -49,6 +59,8 @@ You can also run them individually.
 This command is available on the client package directory and lets you build your project manually. 
 
 # How to use
+
+When you first open the application, you'll need to hover to the top of the application to open your first window.
 
 
 
