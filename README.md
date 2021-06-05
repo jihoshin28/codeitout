@@ -62,88 +62,102 @@ This command is available on the client package directory and lets you build you
 
 When you first open the application, you'll need to hover to the top of the application to open your first window.
 
+![](./gifs/1st_open.gif)
+
+After you open your first window, you can also choose to add windows, underneath ones you've already opened.
+
+![](./gifs/2nd_open.gif)
+
+## Code Editor
+
+The code editor consists of two portions: the code editor and the display window. The display window is an iframe with hardcoded HTML, imports, and functions.
+
+### Show()
+
+In order to make it easier for users to easily utilze the display window, I've added a hardcoded `show()` function, which allows display of primitive values, arrays, objects, and JSX elements. 
+
+For JSX elements in show elements just format your code as if you were coding HTML.
+
+![](./gifs/code_show.gif)
+
+Of course you can also run functions, like this one, and use the console to observe your output.
+
+![](./gifs/code_function.gif)
+
+You can also choose to write out full React components like this one, and interact with the results in the window. 
+
+![](./gifs/code_react_component.gif)
+
+The platform includes a format button which utilizes the Prettier library to format your code.
+
+![](./gifs/code_format.gif)
+
+### Imports
+
+Note that this previous example of code uses import statements so a quick note on that. The imports are coming from `https://unpkg.com/{name_of_import}`, with `name_of_import` being the package that was referenced in the quotes of the `import React from 'react'` statement. 
+
+This statement will reference `https://unpkg.com/react/` and return the referenced package. You can visit the unpkg url to check if the import you are looking for exists.
+
+If you want to check how to use the import, just `console.log({your_package})` to check whats included. 
+
+You can also import CSS libraries like bootstrap using statements like this `import 'bootstrap/dist/css/bootstrap.css'`.
+
+### Compilation in multiple windows
+
+I wanted to consider cases where users might want to have variables, functions, and components available in other windows.
+
+In order to consider these cases, the current set up is configured so that later windows is compiled with code that was written before. Earlier windows do **not** have access to later code. 
+
+In this example you can see how variables already declared can be displayed in later windows. 
+
+![](./gifs/show_windows.gif)
+
+This could be useful for writing out separate components and displaying the results in a final window. No need for import statements.
+
+## Text Editor
+
+The text editor will be closed when you first add one to your screen. 
+
+Simply click on the screen to open and start typing. 
+
+To close, click anywhere outside the text editor.
+
+![](./gifs/text_click.gif) 
+
+The text editor provides multiple options for text styling like **bold**, *italicized*, ~~strikethrough~~.
+
+There are also add borders and headers.
+
+![](./gifs/text_option.gif) 
+
+Other options include links, quotes, code snippets, and images. 
+
+![](./gifs/text_snippet_option.gif) 
+
+You can also create various types of lists.
+
+![](./gifs/text_list.gif) 
+
+## Window Manipulation
+
+All windows can be resized, reordered, and deleted.
+
+You can resize code editor windows to resize your display window, and all windows have vertical resizing.
+
+![](./gifs/resize_windows.gif)
+
+Here's what it looks like to bring a specific window into a desired location. You can move a window up or down.
+
+![](./gifs/moving_windows.gif)
+
+You can also delete your windows.
+
+![](./gifs/deleting_windows.gif)
 
 
+## Under the hood 
 
 
-
-
-
-
-
-## Backend
-
-### Models
-
-The data tables included for this project are:
-
-- admin: user model with information relevant for signing in.
-- students: students who can join courses, 
-  - student_groups: join table for students and groups.
-  - student_courses: join table for students and courses. This model includes relevant information like score and completion percentage.
-  - posts: students can create posts on forums
-- teachers: teachers can teach many different courses
-- courses: belongs to one teacher and can have many students.
-- groups: a group for students.
-- forums: a model that can be made for 
-- courses: belongs to one teacher and has many students.
-
-### CRUD
-
-As the admin you have the capability to create or destroy groups, courses, forums, as well as any student relationships they have to courses or groups. You can update your username, email and password in settings, which include your login credentials.
-
-## Authentication
-
-The server handles authentication by checking for with the `/login` route which checks the form's login credentials, and returns a jwt token if the credentials are valid.
-
-All data is verified by a middleware which uses the `jwt.verify` method to ensure that the header being received has a valid token, which decodes to match the user's username.
-
-## Tests
-
-The backend server has tests that run on jest that I've created to ensure all the routes are running well. You can run `npm test` in the backend component to ensure that all routes are running correctly.
-
-Inside the test files I'm using `supertest` to make requests to the backend and checking for if the resonses have values that make sense for each route/controller operation.
-
-
-## Frontend
-
-### Admin Panel
-
-The admin panel has __3 different panels__ for groups, forums, courses. You can change which one you want to view in the settings.
-
-Each panel has graphs relevant for that data model, as well as sections to create new instances of your model, as well as new associations.
-
-### Sidebar and toolbar
-
-The toolbar has a sign out and settings button. The settings button is used to change which admin panel you want to view.
-
-The sidebar has links to other pages to access and manipulate various models.
-
-### Screens
-
-Courses: List of courses with options to view student list, course information (graph data), and to remove course.
-Groups: List of groups with options to view student list, and to remove group.
-Forums: List of forums with options to view forum(all of its posts), and to remove forum.
-Students: List of students with options to contact student and remove student.
-Teachers: List of teachers with options to contact teacher and remove teacher.
-
-### Lazy Loading
-
-All screens use the Intersection Observer API to detect when a particular dataset is entering into the screen and uses css transitions to fade in the data.
-
-### Graphs
-
-I used a the Bar, Pie, and Scatter graphs from the `react-google-charts` library for a various data groupings (f.e. students in one course, all students in all courses, all groups, etc.). 
-
-After making an API call I include helper functions in the React components to organize the data to make it useable for the React Google chart component.
-
-## State
-
-I'm taking care of state mainly with `redux` and `react-redux`. I make a backend call (with actions) to the API server and with the data I receive back, I run a dispatch function which waits for the asynchronous function completion, and updates the state which is centralized on the store.
-
-Whenever I mount a component I am making an API call using actions needed for all relevant data at once.
-
-There were various situations that I opted to use the state on the component itself like when filtering/sorting the data, as well as retaining form information. 
 
 # Important libraries
 
