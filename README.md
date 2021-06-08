@@ -16,7 +16,7 @@ You can also choose to access the files which are hosted on NPM.
 
 ### NPX
 
-The easiest way to run the platform is by running `npx codeitout serve` in your CLI. You'll want to create a new folder, 
+The easiest way to run the platform is by running `npx codeitout serve` in your CLI. You'll want to navigate to a new folder, since your code will be saved in this directory.
 
 This command will ask you permission to download necessary files from NPM, and then start your Express server right away. 
 
