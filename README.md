@@ -76,7 +76,17 @@ The code editor consists of two portions: the code editor and the display window
 
 In order to make it easier for users to easily utilze the display window, I've added a hardcoded `show()` function, which allows display of primitive values, arrays, objects, and JSX elements. 
 
-For JSX elements in show elements just format your code as if you were coding HTML.
+*The current configuration is so that show can only be called once per code editor window*
+
+For JSX elements in show elements just input the desired plain HTML.
+
+For example: 
+
+```
+show(<div>
+  <button className = 'btn btn-primary'>Click me!</button> 
+</div>)
+```
 
 ![](./gifs/code_show.gif)
 
@@ -85,6 +95,8 @@ Of course you can also run functions, like this one, and use the console to obse
 ![](./gifs/code_function.gif)
 
 You can also choose to write out full React components like this one, and interact with the results in the window. 
+
+**Note that if you want to write your own `ReactDOM.render` statement, you must refer to the element with class 'root'**
 
 ![](./gifs/code_react_component.gif)
 
@@ -112,7 +124,11 @@ In this example you can see how variables already declared can be displayed in l
 
 ![](./gifs/show_windows.gif)
 
-This could be useful for writing out separate components and displaying the results in a final window. No need for import statements.
+**Use case examples for multiple windows**
+
+1) Create a children React components and then move on to parent components. 
+2) Create a custom CSS file before using show function to display plain HTML (*For custom CSS please refer to instructions in the under the hood section*).
+3) Create a vanilla Javascript file before using show function to display plain HTML.
 
 ## Text Editor
 
@@ -155,145 +171,303 @@ You can also delete your windows.
 ![](./gifs/deleting_windows.gif)
 
 
-## Under the hood 
+# Under the hood 
 
+## Bundling
 
+One interesting challenge for this project was trying to bundle the code for individual code snippets on a browser.
 
-# Important libraries
+ESBuild finds all necessary file paths, and attempts to load the files when found, but relies on a file system to find the files it needs to compile, so we had to find a way around this limitation. 
 
-## Backend
+Finding the necessary import file paths and loading them are performed through the library's `onResolve` and `onBuild` functions respectively, and so instead of using the default functions, I modified the library and created custom functions.
 
-### Sequelize
+These are the custom functions
 
-I used the Sequelize, which is a promise based Node.js ORM for Postgres. 
+### `onResolve`
 
-This framework was the central component for handling all my backend work. It created migration tables, seeder files, controllers, and even created configurations for hooking up to my postgres database.
+```
+import * as esbuild from 'esbuild-wasm';
 
-I actually switched over to using this ORM after realizing that object relationship is much easire on Sequelize as opposed to using SQL queries.
+export const unpkgPathPlugin = () => {
+  return {
+    name: 'unpkg-path-plugin',
+    setup(build: esbuild.PluginBuild) {
+      // handle root entry index.js file
+      build.onResolve({ filter: /(^index\.js$)/ }, () => {
+        console.log('onBuild');
+        return { path: 'index.js', namespace: 'a' };
+      });
 
-Before this I was using 
+      // handle relative paths in a module
+      build.onResolve({ filter: /^\.+\// }, (args: any) => {
+        console.log('onBuild', args);
+        return {
+          namespace: 'a',
+          // create new url with relative path and resolveDir statement, which is the path based on the relative 
+          path: new URL(args.path, 'https://unpkg.com' + args.resolveDir + '/')
+            .href,
+        };
+      });
 
-### Express
-
-The Node.js web framework which handled running my server, handling routes, and middleware for verifying tokens.
-
-It was my first time using the Express server, as I am more used to Rails, but I found it very easy to use as well as familiar since I am familiar with Javascript.
-
-### pg-tools
-
-Used this library to create a Node.js file which creates a Postgres database on intialization. 
-
-# Frontend
-
-### react-google-charts
-
-A library with all sorts of React graph components available to display user data. 
-
-### Redux
-
-Centralizes state on a store, so that any state object can be passed to any component in the application.
-
-Uses actions to create changes to the centralized state, which can include asynchronouse calls to the API server. (Needs Redux-thunk)
-
-### Redux-thunk
-
-Redux middleware which allows state change after completion of asynchronous API calls.
-
-### Redux-Persist
-
-Middleware for redux to persist data since it gets lost on refresh or other update events, otherwise.
-
-### React-router-dom
-
-React routing library used to handle creating routes, links, and triggering redirects, if the user doesn't have proper authentication.
-
-### Axios
-
-Promise based Javascript HTTP client, which I mainly used to make calls to the backend server.
-
-# Reflections
-
-
-## Possible Improvements
-
-
-### Too basic
-
-I feel like if I had more time I would have spent more time thinking, I would have added more data attributes, and possibly added more data models. 
-
-Currently, my only real compelling data has to do with student performance in courses, but the courses have no actual content and I could have added more options for my groups and forums. 
-
-### So many calls for data.
-
-I also feel like I ended up using asynchronous calls to the API server, way too much. This happened both on the frontend and even the backend side (for example, like when I needed to see what courses were available to seed student_course associations). I think there could have a been a way (especially on the frontend) only how I was accessing and calling for the data. Perhaps I could have made a call for all data on the first page load, and then making minor changes to the state after. 
-
-### CSS 
-
-I would have liked to add more transitions and spice up the CSS side of things.
-
-
-# Technical Questions 
-
-### What libraries did you add to the frontend? What are they used for?
-
-Please refer to the important frontend libraries.
-
-### What's the command to start the application locally?
-
-Please refer to the getting started and availalbe scripts sections.
-
-### How long did you spend on the coding project? What would you add to your solution if you had more time? If you didn't spend much time on the coding project, then use this as an opportunity to explain what you would add.
-
-I explained a lot of what I would like to improve on in my reflections. This was actually the first time I created a server with Express, Node.js, Seqeuelize, Postgres, and Jest(for testing) and so it took me a while to get familiar with these tools. Overall, I enjoyed learning the new framework, because I think it provides way more flexiblity that the backend framework I'm used to (Rails). I actually spending almost two days building out direct PostgreSQL queries(for migrations AND seeds), which I ended up scrapping for the more ORM friendly Sequelize.
-
-However, from a project perspective, if I had a limited amount of time, I think I would try to pick the framework and libraries that I am already familiar with to save time on learning the tools, and taking more time to plan out what I want to build. Also, I will try to find an ORM framework, because they tend to provide a lot of time-saving tools (migration, seeding).
-
-### What was the most useful feature that was added to the latest version of your chosen language? Please include a snippet of code that shows how you've used it.
-
-```javascript
-const models = require('../models')
-
-const createStudentCourses  = (courseIds, studentIds) => {
-  const seedArray = []
-  for(let i = 0; i < 100; i++){
-    let body = {}
-      body['student_id'] = studentIds[Math.floor(Math.random() * studentIds.length)];
-      body['course_id'] = courseIds[Math.floor(Math.random() * courseIds.length)];
-      body['completion'] = Math.floor(Math.random() * 100)
-      body['score'] = Math.floor(Math.random() * 100)
-      body['createdAt'] = new Date()
-      body['updatedAt'] = new Date()
-      seedArray.push(body)
-  }
- console.log(seedArray)
- return seedArray
-}
-
-module.exports = {
-  up: async (queryInterface, Sequelize) => {
-    await models.Student.findAll({})
-    .then(async(res) => {
-      let studentIds = res.map(data => data.id)
-      await models.Course.findAll({})
-      .then(res => {
-        let courseIds = res.map(data => data.id)
-        queryInterface.bulkInsert(
-          'StudentCourses',
-          createStudentCourses(courseIds, studentIds)
-        )
-      })
-    })
-  },
-
-  down: async (queryInterface, Sequelize) => {
-    await queryInterface.bulkDelete('StudentCourses', null, {});
-  }
+      //handle main file in a module
+      build.onResolve({ filter: /.*/ }, async (args: any) => {
+        console.log('onBuild', args);
+        // create url with args.path which is the name of the module
+        return {
+          namespace: 'a',
+          path: `https://unpkg.com/${args.path}`,
+        };
+      });
+    },
+  };
 };
 
 ```
 
-This wasn't necessarily the most important part of my project, in the seeding, but I love the option that Sequelize gave you through accessing promises in order to query for live data. I used the promises here to create new Student to Course relationships, be first accessing which Students and Courses we currently had available.
+For the custom `onResolve` function, I am trying to take various necessary file paths, and creating functions that detect these file paths with filters. 
 
-### How would you track down a performance issue in production? Have you ever had to do this?
+Once I've received the argument, I return a new object which has the relevant pathname. 
 
-I have never had to do this, but I would use a performance tracking tool like [raygun](https://raygun.com/), in order to keep track of any crashes, slowness, or bugs.
+There are 3 important file path arguments all with unique resolutions for their cases.
+
+a) The `index.js` file which will have state of all my individual code cells. This case will simply return the `index.js` path.
+b) Anything that is imported will first have a main module file. These files are directed with the import name in `https://unpkg.com/{module_name}`.
+c) Files that are nested inside the main module file. I first got the directory in unpkg to the to the relative path, and then the filename. This was necessary, because the file path of main module often different from the directory to the relative path.
+
+### `onLoad`
+
+```
+import * as esbuild from 'esbuild-wasm';
+import axios from 'axios';
+import localForage from 'localforage';
+
+const fileCache = localForage.createInstance({
+  name: 'filecache',
+});
+
+console.log(fileCache)
+
+export const fetchPlugin = (inputCode: string) => {
+    return {
+        name: 'fetch-plugin',
+        setup(build: esbuild.PluginBuild) {
+          // for loading index.js file
+          build.onLoad({ filter: /(^index\.js$)/ }, () => {
+              return {
+              loader: 'jsx',
+              contents: inputCode,
+              };
+          });
+          // load up cached results if pathname matches up with a certain file
+          build.onLoad({filter: /.*/}, async (args: any) => {
+            console.log('Returned results from a cache')
+              // console.log('I ran and got cached results')
+              const cachedResult = await fileCache.getItem<esbuild.OnLoadResult>(args.path);
+          
+              if(cachedResult){
+                  return cachedResult
+              }
+          })
+        
+          // for loading css files
+          build.onLoad({ filter: /.css$/ }, async (args: any) => {
+            
+            const { data, request } = await axios.get(args.path);
+
+            // escaped variable is returned css file without the quotes and double quotes so that string doesn't terminate early 
+            const escaped = data
+            .replace(/\n/g, '')
+            .replace(/"/g, '\\"')
+            .replace(/'/g, "\\'");
+            console.log(request, data, escaped, "FOR CSS")
+
+            // create new style element and appended to document using Javascript
+            const contents = `
+            const style = document.createElement('style');
+            style.innerText = '${escaped}';
+            document.head.appendChild(style);
+            `;
+    
+            const result: esbuild.OnLoadResult = {
+            loader: 'jsx',
+            contents,
+            resolveDir: new URL('./', request.responseURL).pathname,
+            };
+            // set cached item for args.path
+            await fileCache.setItem(args.path, result);
+    
+            return result;
+          });
+          
+          // for loading all files besides css files 
+          build.onLoad({ filter: /.*/ }, async (args: any) => {
+            
+            // use args.path in axios request
+            const { data, request } = await axios.get(args.path);
+            console.log(request, data, 'FOR ALL IMPORTS BESIDES CSS')
+            const result: esbuild.OnLoadResult = {
+              loader: 'jsx',
+              contents: data,
+              // detects when the url we received was a redirect, and the responseURL is different from the one that was provided 
+              resolveDir: new URL('./', request.responseURL).pathname,
+            };
+            // set cached item for args.path 
+            await fileCache.setItem(args.path, result);
+    
+            return result;
+          });
+        },
+      };
+}
+```
+For the custom `onLoad` I have a couple notable features. 
+
+1) If we have not loaded an import file yet, we are using `axios` to make a call to unpkg.com.
+2) I included a cache to improve performace. If a certain pathname has already been loaded, the pathname will have already been loaded onto our cache from the previous load, and we will simply return the data from the cache.
+3) I am using filters again to refer to all required path arguments. This includes the index.js file, imports, and specifically CSS imports which has a string that needs to be manipulated and inputted into a style element.
+4) We are returning a `resolveDir` property to find the exact directory which was referred to upon loading the import file.
+
+## Frontend
+
+### Code Preview
+
+To handle the challenge of previewing the code for multiple code windows isolated from the original React application, I used iframes, which were loaded with hard coded HTML strings. 
+
+```
+<html>
+      <head>
+        <style>html {background-color: white;}</style>
+      </head>
+      <body>
+        <div id="root"></div>
+        <script>
+					const handleError = (err) => {
+						const root = document.querySelector('#root');
+						root.innerHTML = '<div style="color: red;"><h4>Runtime Error</h4>' + err + '</div>';
+						console.error(err);
+					}
+					window.addEventListener('error', (event) => {
+						event.preventDefault()
+						handleError(event.error)
+					})
+          window.addEventListener('message', (event) => {
+            try {
+              eval(event.data);
+            } catch (err) {
+              handleError(err)
+            }
+          }, false);
+        </script>
+      </body>
+    </html>
+```
+
+This is what is included in all of the iframe windows. These are sent a message (property of an iframe) upon a user typing some code, which 1) changes the state, then 2) runs some debouncing logic to bundle the code after 750 ms of the user not typing anything. 
+
+This solution which isolated each coding environment from the original React application as well as other coding windows, prevented the users code from affecting any irrelevant environments.
+
+### State 
+
+State for this application was handled using Redux, and was stored as an object, which has key-value pairs, which referred code cells' ids to relevant data (content and type of cell). I also had an order state which was stored as an array that contained just the cells' ids. 
+
+I have a hook inside the application for accumulating the relevant code when the code editor attempts a bundle. 
+
+```
+return useTypedSelector((state) => {
+const { data, order } = state.cells;
+const cumulativeData = order.map((id) => data[id]);
+    // cumulative code data initialized with:
+    // show function - displays primitive values, objects, and JSX elements
+    // React and ReactDom always imported separately to prevent import conflict 
+
+    const showFunc = `
+        import _React from 'react';
+        import _ReactDOM from 'react-dom';
+        var show = (value) => {
+            const display = document.querySelector('#root')
+            if(typeof value === 'object'){
+                if(value.$$typeof && value.props){
+                    _ReactDOM.render(value, display)
+                } else {
+                    display.innerHTML = JSON.stringify(value)
+                }
+            } else {
+                display.innerHTML = value;
+            }
+        }
+    `
+    let diffShowFunc = `var show = () => {}`
+
+    const cumulativeCodeData = []
+    // get all content from cells before this current cell id if they have type: 'code'
+    for(let c of cumulativeData){
+        if(c.type === 'code'){
+            if(c.id === cell_id){
+                cumulativeCodeData.push(showFunc)
+            } else {
+                cumulativeCodeData.push(diffShowFunc)
+            }
+            cumulativeCodeData.push(c.content)
+        }
+        if(c.id === cell_id){
+            break
+        }
+    }
+    return cumulativeCodeData
+```
+
+This hook uses both order and data states in order to:
+1) Accumulate all the code content from the cells before it.
+2) Include the code for the show function, which handles displaying, primitive values, objects, and JSX elements. 
+3) Push the functional show function before the cell id that matches the cell's id which is calling the cumulative code function.
+
+This function is called from a code cell component with the current cell's id, which then sends the cumulative code to the bundling process.
+
+# Libraries
+
+Typescript: Strict syntactical superset of JavaScript which adds static typing
+
+Axios: Promise based HTTP client
+
+## CLI
+
+Commander: Library for building Node.js CLI interfaces
+
+Esbuild: Fast modern bundler; handles transpiling and bundling for the application
+
+## Local API
+
+Express: Node.js web application framework for creating HTTP utility methods and middlewares
+
+Http-proxy-middleware: Node.js proxying library
+
+## Client
+
+### State
+
+Redux: State management system for centralizing the state system
+
+React-redux: Connects the React components to the Redux state
+
+Redux-thunk: Allows Redux to incorporate async functions
+
+Immer: Allows state change in Redux without the use of spread operators
+
+### Components
+
+React-resizable: Provides resizable box elements
+
+Monaco-editor: Code editor react component
+
+Monaco-jsx-highlighter: Syntax highlighting for monaco
+
+Codeshift: File transformer used for monaco highlighter
+
+Prettier: For formatting code
+
+Bulmaswatch: CSS library
+
+### Bundler 
+Esbuild-wasm: Cross-platform WebAssembly binary for Esbuild
+
+Localforage: For data caching
