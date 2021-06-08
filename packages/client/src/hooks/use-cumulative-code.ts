@@ -41,6 +41,7 @@ export const useCumulativeCode = (cell_id:string) => {
             break
         }
     }
+    console.log(cell_id, cumulativeCodeData)
     return cumulativeCodeData
 
   });

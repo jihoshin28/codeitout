@@ -30,7 +30,7 @@ const CodeCell: React.FC<CodeCellProps> = ({ cell }) => {
     const timer = setTimeout(async () => {
       bundleAction(cell.id, cumulativeCode.join('\n'));
     }, 750);
-
+    console.log(cumulativeCode, cell.id)
     return () => {
       clearTimeout(timer);
     };
